@@ -169,6 +169,42 @@ class TestHandComparisons(unittest.TestCase):
         self.assertLess(HIGH_HAND, PAIR_HAND)
         self.assertEqual(HIGH_HAND, HIGH_HAND)
 
+    def test_high_different_hands(self):
+        self.assertGreater(
+            Hand(['3H', '4S', '5H', '7H', 'AC']),
+            Hand(['3H', '4S', '5H', '7H', 'KC'])
+        )
+        self.assertLess(
+            Hand(['3H', '4S', '5H', '6H', 'KC']),
+            Hand(['3H', '4S', '5H', '7H', 'KH'])
+        )
+        self.assertEqual(
+            Hand(['3H', '4S', '5H', '7H', 'KC']),
+            Hand(['3H', '4S', '5H', '7H', 'KH'])
+        )
+        self.assertNotEqual(
+            Hand(['3H', '4S', '3S', '7H', 'KC']),
+            Hand(['3H', '4S', '5H', '7H', 'KH'])
+        )
+
+    def test_high_pair(self):
+        self.assertGreater(
+            Hand(['4H', '4S', '5H', '7H', 'AC']),
+            Hand(['3H', '3S', '5H', '7H', 'KC'])
+        )
+
+    def test_high_straight_flush(self):
+        self.assertGreater(
+            Hand(['AH', 'KH', 'QH', 'JH', '10H']),
+            Hand(['KS', 'QS', 'JS', '10S', '9S'])
+        )
+        self.assertEqual(
+            Hand(['AH', 'KH', 'QH', 'JH', '10H']),
+            Hand(['AS', 'KS', 'QS', 'JS', '10S'])
+        )
+
+    # There should be many, many more tests
+
 
 if __name__ == "__main__":
     unittest.main()

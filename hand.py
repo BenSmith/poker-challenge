@@ -1,4 +1,4 @@
-from staticdata import CARD_RANKS, SCORE
+from staticdata import CARD_RANKS, SCORE, INV_SCORE
 
 
 class Hand:
@@ -128,26 +128,51 @@ class Hand:
         return self._score
 
     def __gt__(self, other):
+        if self._score is None:
+            self._score_hand()
+
         if self._score > other.get_score():
             return True
         elif self._score < other.get_score():
             return False
         else:
+            other_ranks = other.get_ranks()
+            for r in range(len(self._card_ranks)):
+                if CARD_RANKS[self._card_ranks[r]] > CARD_RANKS[other_ranks[r]]:
+                    return True
+                elif CARD_RANKS[self._card_ranks[r]] < CARD_RANKS[other_ranks[r]]:
+                    return False
+
             return False
-            # TODO: compare card ranks
 
     def __lt__(self, other):
+        if self._score is None:
+            self._score_hand()
         if self._score > other.get_score():
             return False
         elif self._score < other.get_score():
             return True
         else:
+            other_ranks = other.get_ranks()
+            for r in range(len(self._card_ranks)):
+                if CARD_RANKS[self._card_ranks[r]] < CARD_RANKS[other_ranks[r]]:
+                    return True
+                elif CARD_RANKS[self._card_ranks[r]] > CARD_RANKS[other_ranks[r]]:
+                    return False
             return False
-            # TODO: compare card ranks
 
     def __eq__(self, other):
+        if self._score is None:
+            self._score_hand()
         if self._score == other.get_score():
+            other_ranks = other.get_ranks()
+            for r in range(len(self._card_ranks)):
+                if self._card_ranks[r] != other_ranks[r]:
+                    return False
             return True
-        # TODO: compare card ranks
         return False
 
+    def __repr__(self):
+        if self._score is None:
+            self._score_hand()
+        return "%s %s" % (INV_SCORE[self._score], self._cards)
