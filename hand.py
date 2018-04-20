@@ -1,4 +1,4 @@
-from staticdata import CARD_RANKS
+from staticdata import CARD_RANKS, SCORE
 
 
 class Hand:
@@ -14,6 +14,7 @@ class Hand:
         self._rank_count = dict()
         self._is_flush = None
         self._is_straight = None
+        self._score = None
 
     def _count_ranks(self):
         for x in self._card_ranks:
@@ -78,8 +79,75 @@ class Hand:
             self._count_ranks()
         return self._rank_count
 
+    def _score_hand(self):
+        if self.is_straight() and self.is_flush():
+            self._score = SCORE['Straight Flush']
+            return
+
+        ranks = self.get_rank_count()
+        num_unique_ranks = len(ranks)
+
+        if num_unique_ranks == 2:
+            # either a full house or four-of-a-kind
+            for k, v in ranks.items():
+                if v == 4:
+                    self._score = SCORE['Four Of A Kind']
+                    return
+                elif v == 3:
+                    self._score = SCORE['Full House']
+                    return
+
+        if self.is_flush():
+            self._score = SCORE['Flush']
+            return
+
+        if self.is_straight():
+            self._score = SCORE['Straight']
+            return
+
+        if num_unique_ranks == 3:
+            # either three of a kind or two pair
+            for k, v in ranks.items():
+                if v == 3:
+                    self._score = SCORE['Three Of A Kind']
+                    return
+                if v == 2:
+                    self._score = SCORE['Two Pair']
+                    return
+
+        if num_unique_ranks == 4:
+            # a pair
+            self._score = SCORE['Pair']
+            return
+
+        self._score = SCORE['High']
+
+    def get_score(self):
+        if self._score is None:
+            self._score_hand()
+        return self._score
+
     def __gt__(self, other):
-        return 0
+        if self._score > other.get_score():
+            return True
+        elif self._score < other.get_score():
+            return False
+        else:
+            return False
+            # TODO: compare card ranks
 
     def __lt__(self, other):
-        return 0
+        if self._score > other.get_score():
+            return False
+        elif self._score < other.get_score():
+            return True
+        else:
+            return False
+            # TODO: compare card ranks
+
+    def __eq__(self, other):
+        if self._score == other.get_score():
+            return True
+        # TODO: compare card ranks
+        return False
+

@@ -25,10 +25,12 @@ SCORE = {
     'High': 0,
     'Pair': 1,
     'Two Pair': 2,
-    'Three of a kind': 3,
+    'Three Of A Kind': 3,
     'Straight': 4,
     'Flush': 5,
     'Full House': 6,
-    'Four of a kind': 7,
+    'Four Of A Kind': 7,
     'Straight Flush': 8
 }
+
+INV_SCORE = {v: k for k, v in SCORE.items()}
