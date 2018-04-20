@@ -1,6 +1,8 @@
 from staticdata import CARD_RANKS, SCORE, INV_SCORE
+from functools import total_ordering
 
 
+@total_ordering
 class Hand:
     def __init__(self, cards):
         self._cards = cards
@@ -136,30 +138,46 @@ class Hand:
         elif self._score < other.get_score():
             return False
         else:
-            other_ranks = other.get_ranks()
-            for r in range(len(self._card_ranks)):
-                if CARD_RANKS[self._card_ranks[r]] > CARD_RANKS[other_ranks[r]]:
-                    return True
-                elif CARD_RANKS[self._card_ranks[r]] < CARD_RANKS[other_ranks[r]]:
-                    return False
+            if INV_SCORE[self._score] == 'Full House':
+                if not self._rank_count:
+                    self._count_ranks()
+                my_three_rank = 0
+                my_two_rank = 0
+                for k, v in self._rank_count.items():
+                    if v == 3:
+                        my_three_rank = k
+                    if v == 2:
+                        my_two_rank = k
 
-            return False
-
-    def __lt__(self, other):
-        if self._score is None:
-            self._score_hand()
-        if self._score > other.get_score():
-            return False
-        elif self._score < other.get_score():
-            return True
-        else:
-            other_ranks = other.get_ranks()
-            for r in range(len(self._card_ranks)):
-                if CARD_RANKS[self._card_ranks[r]] < CARD_RANKS[other_ranks[r]]:
+                other_ranks = other.get_rank_count()
+                other_three_rank = 0
+                other_two_rank = 0
+                for k, v in other_ranks.items():
+                    if v == 3:
+                        other_three_rank = k
+                    if v == 2:
+                        other_two_rank = k
+                if CARD_RANKS[my_three_rank] > CARD_RANKS[other_three_rank]:
                     return True
-                elif CARD_RANKS[self._card_ranks[r]] > CARD_RANKS[other_ranks[r]]:
+                if CARD_RANKS[my_three_rank] < CARD_RANKS[other_three_rank]:
                     return False
-            return False
+                if CARD_RANKS[my_three_rank] == CARD_RANKS[other_three_rank]:
+                    if CARD_RANKS[my_two_rank] > CARD_RANKS[other_two_rank]:
+                        return True
+                    if CARD_RANKS[my_two_rank] < CARD_RANKS[other_two_rank]:
+                        return False
+                    if CARD_RANKS[my_two_rank] == CARD_RANKS[other_two_rank]:
+                        return False
+            else:
+                # not a full house
+                other_ranks = other.get_ranks()
+                for r in range(len(self._card_ranks)):
+                    if CARD_RANKS[self._card_ranks[r]] > CARD_RANKS[other_ranks[r]]:
+                        return True
+                    elif CARD_RANKS[self._card_ranks[r]] < CARD_RANKS[other_ranks[r]]:
+                        return False
+
+                return False
 
     def __eq__(self, other):
         if self._score is None:

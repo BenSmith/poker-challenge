@@ -203,6 +203,12 @@ class TestHandComparisons(unittest.TestCase):
             Hand(['AS', 'KS', 'QS', 'JS', '10S'])
         )
 
+    def test_full_house(self):
+        self.assertGreater(
+            Hand(['QH', 'QD', 'KH', 'KS', 'KD']),
+            Hand(['JD', 'JH', 'JS', 'AD', 'AH'])
+        )
+
     # There should be many, many more tests
 
 
