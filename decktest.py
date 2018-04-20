@@ -1,5 +1,4 @@
 import unittest
-
 from deck import Deck
 
 
@@ -16,9 +15,14 @@ class DeckTest(unittest.TestCase):
         self.assertNotEqual(self.deck.deal_hands(0), None)
 
     def test_deal_one_hand(self):
-        h = self.deck.deal_hands(1)
-        self.assertEqual(len(h), 1)
-        self.assertEqual(len(h[0]), 5)
+        hand = self.deck.deal_hands(1)
+        self.assertEqual(len(hand), 1)
+        self.assertEqual(hand[0].get_hand_size(), 5)
+
+    def test_deal_two_hands(self):
+        hands = self.deck.deal_hands(2)
+        self.assertEqual(len(hands), 2)
+        self.assertEqual(hands[0].get_hand_size(), hands[1].get_hand_size())
 
     def test_deal_too_many_hands(self):
         try:
