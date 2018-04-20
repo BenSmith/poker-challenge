@@ -1,3 +1,5 @@
+# Contains data for card ranks, suits, and scoring
+
 CARD_RANKS = {
     '2': 1,
     '3': 2,
