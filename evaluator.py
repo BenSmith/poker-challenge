@@ -1,71 +1,45 @@
-from staticdata import CARD_RANKS
+from staticdata import SCORE
 
 
-def is_flush(suits):
-    rv = True
-    suit = suits[0]
-    for x in suits:
-        if x != suit:
-            rv = False
-            break
-    return rv
+def score_hand(hand):
+    if hand.is_straight() and hand.is_flush():
+        return SCORE['Straight Flush']
 
+    ranks = hand.get_rank_count()
+    num_unique_ranks = len(ranks)
 
-def count_ranks(ranks):
-    rv = dict()
-    for x in ranks:
-        if x not in rv:
-            rv[x] = 1
-        else:
-            rv[x] += 1
-    return rv
+    if num_unique_ranks == 2:
+        # either a full house or four-of-a-kind
+        for k, v in ranks.items():
+            if v == 4:
+                return SCORE['Four of a kind']
+            elif v == 3:
+                return SCORE['Full House']
 
+    if hand.is_flush():
+        return SCORE['Flush']
 
-def is_straight(rank_counts):
+    if hand.is_straight():
+        return SCORE['Straight']
 
-    ranks = list(rank_counts.keys())
-    ranks.sort(key=CARD_RANKS.__getitem__)
+    if num_unique_ranks == 3:
+        # either three of a kind or two pair
+        for k, v in ranks.items():
+            if v == 3:
+                return SCORE['Three of a kind']
+            if v == 2:
+                return SCORE['Two Pair']
 
-    if len(rank_counts.keys()) < 5:
-        return False
+    if num_unique_ranks == 4:
+        # a pair
+        return SCORE['Pair']
 
-    val = CARD_RANKS[ranks[0]] - 1
-    for c in ranks:
-        if CARD_RANKS[c] != val + 1:
-            return False
-        val += 1
-
-    return True
-
-
-def compare(first, second):
-    first_suits = [x[-1:] for x in first]
-    first_suits.sort()
-    first_ranks = [x[:-1] for x in first]
-    first_ranks.sort(key=CARD_RANKS.__getitem__, reverse=True)
-
-    second_suits = [x[-1:] for x in second]
-    second_suits.sort()
-    second_ranks = [x[:-1] for x in second]
-    second_ranks.sort(key=CARD_RANKS.__getitem__, reverse=True)
-
-    first_is_flush = is_flush(first_suits)
-    second_is_flush = is_flush(second_suits)
-
-    first_rank_counts = count_ranks(first_ranks)
-    second_rank_counts = count_ranks(second_ranks)
-
-    first_is_straight = is_straight(first_rank_counts)
-    second_is_straight = is_straight(second_rank_counts)
-
-    print(first_ranks, first_suits)
-    print(first_is_flush, first_is_straight, first_rank_counts)
-    print(second_ranks, second_suits)
-    print(second_is_flush, second_is_straight, second_rank_counts)
+    return SCORE['High']
 
 
 if __name__ == '__main__':
-    first_hand = ['2H', '2S', '2C', '10H', '3D']
-    second_hand = ['AH', '10S', 'QC', 'KD', 'JS']
+    from hand import Hand
+    first_hand = Hand(['2H', '2S', '2C', '10H', '3D'])
+    second_hand = Hand(['AH', '10S', 'QC', 'KD', 'JS'])
 
-    compare(first_hand, second_hand)
+    print(score_hand(first_hand) > score_hand(second_hand))
