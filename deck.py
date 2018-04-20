@@ -4,14 +4,14 @@ from staticdata import CARD_RANKS, CARD_SUITS
 
 
 class Deck:
-    def __init__(self, *args, **kwargs):
 
+    def __init__(self, *args, **kwargs):
         self._cards = None
         self._build_deck()
         self._remaining_cards = len(self._cards)
 
     def _build_deck(self):
-        self._cards = [rank + suit for rank in CARD_RANKS for suit in CARD_SUITS]
+        self._cards = [rank + suit for rank in CARD_RANKS.keys() for suit in CARD_SUITS]
 
     def deal_hands(self, num_hands=0, hand_size=5):
 
