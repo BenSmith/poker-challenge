@@ -1,7 +1,7 @@
 import unittest
 
-from hand import Hand
-from staticdata import SCORE, INV_SCORE
+from .hand import Hand
+from .staticdata import SCORE, INV_SCORE
 
 STRAIGHT_FLUSH_HAND = Hand(['3H', '4H', '5H', '7H', '6H'])
 FOUR_OF_A_KIND_HAND = Hand(['3H', '4S', '3D', '3S', '3C'])

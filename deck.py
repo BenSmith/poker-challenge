@@ -1,8 +1,8 @@
 # Representation of a deck of cards
 
 import random
-from hand import Hand
-from staticdata import CARD_RANKS, CARD_SUITS
+from .hand import Hand
+from .staticdata import CARD_RANKS, CARD_SUITS
 
 
 class Deck:

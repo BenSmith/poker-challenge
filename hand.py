@@ -1,5 +1,5 @@
 # represents a poker hand
-from staticdata import CARD_RANKS, SCORE, INV_SCORE
+from .staticdata import CARD_RANKS, SCORE, INV_SCORE
 from functools import total_ordering
 
 
